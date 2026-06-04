@@ -11,10 +11,26 @@ const PORT = process.env.PORT || 5000;
 
 // CORS Configuration
 const corsOptions = {
-  origin:
-    process.env.NODE_ENV === 'production'
-      ? process.env.CORS_ORIGIN
-      : 'http://localhost:5173',
+  origin: (origin, callback) => {
+    const allowedOrigins =
+      process.env.NODE_ENV === 'production'
+        ? [
+            process.env.CORS_ORIGIN,
+            'https://techvers.in',
+            'https://www.techvers.in',
+          ]
+        : [
+            'http://localhost:5173',
+            'https://techvers.in',
+            'https://www.techvers.in',
+          ];
+
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST'],
   credentials: true,
 };
